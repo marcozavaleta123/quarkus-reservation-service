@@ -1,13 +1,12 @@
 package com.app.infraestructure.persistence;
 
-import static java.util.Objects.isNull;
+import java.time.LocalDate;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 
 import com.app.application.port.out.ScheduleRepositoryOutPort;
 import com.app.domain.model.Schedule;
-import com.app.infraestructure.exception.BusinessErrorType;
-import com.app.infraestructure.exception.BusinessException;
 import com.app.infraestructure.persistence.entity.ProfessionalEntity;
 import com.app.infraestructure.persistence.entity.ScheduleEntity;
 
@@ -22,40 +21,29 @@ public class JpaScheduleRepositoryAdapter implements ScheduleRepositoryOutPort {
 	private final ModelMapper modelMapper;
 
 	@Override
-	public Uni<String> save(Schedule schedule) {
-		return ProfessionalEntity.find("dni = ?1", schedule.getProfessionalDni()).firstResult()
+	public Uni<Long> save(Schedule schedule, Long professionalId) {
+		ScheduleEntity entity = modelMapper.map(schedule, ScheduleEntity.class);
+		
+		return ProfessionalEntity.findById(professionalId)
 				.flatMap(professional -> {
-					if (isNull(professional)) {
-						return Uni.createFrom().failure(new BusinessException(BusinessErrorType.VALIDATION_ERROR,
-								"el DNI del profesional ingresado no se encuentra registrado"));
-					}
-
 					ProfessionalEntity professionalEntity = (ProfessionalEntity) professional;
+					
+					entity.setProfessionalEntity(professionalEntity);
+					entity.setStatus(true);
 
-					return ScheduleEntity.<ScheduleEntity>find("professionalEntity.id = ?1 and date = ?2 and status = ?3", professionalEntity.getId(), schedule.getDate(), true).list()
-							.flatMap(list -> {
-								for (ScheduleEntity sc : list) {
-									if ((schedule.getStartTime().compareTo(sc.getStartTime()) >= 0 && schedule.getStartTime().compareTo(sc.getEndTime()) <= 0)
-										|| (schedule.getEndTime().compareTo(sc.getStartTime()) > 0 && schedule.getEndTime().compareTo(sc.getEndTime()) < 0)) {
-										return Uni.createFrom().failure(new BusinessException(
-												BusinessErrorType.VALIDATION_ERROR,
-												"el profesional seleccionado no cuenta con disponibilidad en el horario elegido"));
-									}
-								}
-
-								ScheduleEntity entity = modelMapper.map(schedule, ScheduleEntity.class);
-								entity.setProfessionalEntity(professionalEntity);
-								entity.setStatus(true);
-
-								return ScheduleEntity.persist(entity).flatMap(s -> {
-									return Uni.createFrom()
-											.item("Al profesional cuyo DNI es : " + schedule.getProfessionalDni()
-													+ " se le asignó correctamente el horario : " + schedule.getDate()
-													+ " hora de inicio : " + schedule.getStartTime() + " - hora fin : "
-													+ schedule.getEndTime());
-								});
-							});
+					return ScheduleEntity.persist(entity).map(s -> entity.getId());
 				});
 	}
+
+	@Override
+	public Uni<List<Schedule>> findByProfessionalIdAndDate(long professionalId, LocalDate date) {
+		return ScheduleEntity.find("professionalEntity.id = ?1 and date = ?2 and status = ?3", professionalId, date, true)
+				.list()
+				.map(entities ->
+	            entities.stream()
+	                .map(entity -> modelMapper.map(entity, Schedule.class))
+	                .toList()
+	        );
+    }
 
 }
