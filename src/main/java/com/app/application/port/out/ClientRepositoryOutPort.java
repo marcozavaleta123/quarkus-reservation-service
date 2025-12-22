@@ -14,6 +14,10 @@ public interface ClientRepositoryOutPort {
 	
 	Uni<Client> findByDni(String dni);
 	
-	Uni<String> updateStatus(String dni, boolean status);
+	Uni<Boolean> updateStatus(String dni, boolean status);
+	
+	Uni<Boolean> existsByEmail(String email);
+	
+	Uni<Boolean> existsByDni(String dni);
 
 }
