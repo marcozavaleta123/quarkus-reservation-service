@@ -14,6 +14,6 @@ public interface ProfessionalRepositoryOutPort {
 	
 	Uni<Professional> findByDni(String dni);
 	
-	Uni<String> updateStatus(String dni, boolean status);
+	Uni<Boolean> updateStatus(String dni, boolean status);
 
 }
