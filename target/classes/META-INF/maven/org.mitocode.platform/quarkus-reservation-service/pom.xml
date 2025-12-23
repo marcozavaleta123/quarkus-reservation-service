@@ -80,16 +80,18 @@
 			<artifactId>quarkus-hibernate-validator</artifactId>
 		</dependency>
 
-		<dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-hibernate-reactive-panache</artifactId>
-        </dependency>
+		<!-- Hibernate Reactive Panache -->
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-hibernate-reactive-panache</artifactId>
+</dependency>
 
-		<!-- MySQL reactivo -->
-		<dependency>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-reactive-mysql-client</artifactId>
-        </dependency>
+<!-- Reactive PostgreSQL Client -->
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-reactive-pg-client</artifactId>
+</dependency>
+
 
 		<!-- Flyway -->
 <dependency>

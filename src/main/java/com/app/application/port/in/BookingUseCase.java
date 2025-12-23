@@ -9,7 +9,7 @@ import io.smallrye.mutiny.Uni;
 
 public interface BookingUseCase {
 
-	Uni<String> createBooking(Booking booking);
+	Uni<String> createBooking(Booking booking, String professionalDni, String clientDni);
 	
 	Uni<String> cancelBooking(Long id);
 	

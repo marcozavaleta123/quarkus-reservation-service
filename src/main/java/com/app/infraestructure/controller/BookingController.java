@@ -12,8 +12,6 @@ import com.app.domain.model.Booking;
 import com.app.infraestructure.controller.request.BookingRequest;
 import com.app.infraestructure.util.Result;
 
-import io.quarkus.hibernate.reactive.panache.common.WithSession;
-import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -39,15 +37,14 @@ public class BookingController {
 	@Operation(summary = "Registra las reservas solo si el horario elegido se encuentra disponible x el profesional seleccionado", description = "")
 	@APIResponses({
 			@APIResponse(responseCode = "200", description = "Creación exitosa", content = @Content(schema = @Schema(implementation = Uni.class))) })
-	@WithTransaction
 	@POST
 	public Uni<Response> createBooking(@Valid BookingRequest bookingRequest) {
 		Booking booking = modelMapper.map(bookingRequest, Booking.class);
-		return bookingUseCase.createBooking(booking).map(msg -> Result.builder().data(msg).build())
+		return bookingUseCase.createBooking(booking, bookingRequest.professionalDni(), bookingRequest.clientDni())
+				.map(msg -> Result.builder().data(msg).build())
 				.map(result -> Response.ok(result).build());
 	}
 	
-	@WithTransaction
 	@PUT
 	@Path("/{id}/cancel")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -58,7 +55,6 @@ public class BookingController {
 				.map(result -> Response.ok(result).build());
 	}
 	
-	@WithSession
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Uni<Response> getBooking() {

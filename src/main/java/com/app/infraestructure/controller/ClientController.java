@@ -41,7 +41,6 @@ public class ClientController {
 	@Operation(summary = "Registra los clientes", description = "")
 	@APIResponses({
 			@APIResponse(responseCode = "200", description = "Creación exitosa", content = @Content(schema = @Schema(implementation = Uni.class))) })
-	@WithTransaction
 	@POST
 	public Uni<Response> createClient(@Valid ClientRequest clientRequest) {
 		Client client = modelMapper.map(clientRequest, Client.class);
@@ -50,7 +49,6 @@ public class ClientController {
 				.map(result -> Response.ok(result).build());
 	}
 	
-	@WithTransaction
 	@PUT
 	@Path("/{dni}/update")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -61,7 +59,6 @@ public class ClientController {
 				.map(result -> Response.ok(result).build());
 	}
 	 
-	@WithSession
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Uni<Response> getClient() {
@@ -71,7 +68,6 @@ public class ClientController {
 				.map(result -> Response.ok(result).build());
 	}
 
-	@WithSession
 	@GET
 	@Path("/{dni}")
 	@Produces(MediaType.APPLICATION_JSON)

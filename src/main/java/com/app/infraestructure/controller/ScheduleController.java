@@ -12,7 +12,6 @@ import com.app.domain.model.Schedule;
 import com.app.infraestructure.controller.request.ScheduleRequest;
 import com.app.infraestructure.util.Result;
 
-import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.POST;
@@ -32,7 +31,6 @@ public class ScheduleController {
 	@Operation(summary = "Registra los horarios de los profesionales asignados según su disponibilidad", description = "")
 	@APIResponses({
 			@APIResponse(responseCode = "200", description = "Creación exitosa", content = @Content(schema = @Schema(implementation = Uni.class))) })
-	@WithTransaction
 	@POST
 	public Uni<Response> createSchedule(@Valid ScheduleRequest scheduleRequest) {
 		Schedule schedule = modelMapper.map(scheduleRequest, Schedule.class);

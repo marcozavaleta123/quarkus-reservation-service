@@ -31,7 +31,7 @@ public class JpaScheduleRepositoryAdapter implements ScheduleRepositoryOutPort {
 					entity.setProfessionalEntity(professionalEntity);
 					entity.setStatus(true);
 
-					return ScheduleEntity.persist(entity).map(s -> entity.getId());
+					return ScheduleEntity.persist(entity).replaceWith(entity.getId());
 				});
 	}
 

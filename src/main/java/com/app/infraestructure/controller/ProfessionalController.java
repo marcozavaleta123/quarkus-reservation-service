@@ -13,8 +13,6 @@ import com.app.infraestructure.controller.request.ProfessionalRequest;
 import com.app.infraestructure.controller.response.ProfessionalResponse;
 import com.app.infraestructure.util.Result;
 
-import io.quarkus.hibernate.reactive.panache.common.WithSession;
-import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -41,7 +39,6 @@ public class ProfessionalController {
 	@Operation(summary = "Registra los profesionales", description = "")
 	@APIResponses({
 			@APIResponse(responseCode = "200", description = "Creación exitosa", content = @Content(schema = @Schema(implementation = Uni.class))) })
-	@WithTransaction
 	@POST
 	public Uni<Response> createClient(@Valid ProfessionalRequest professionalRequest) {
 		Professional professional = modelMapper.map(professionalRequest, Professional.class);
@@ -50,7 +47,6 @@ public class ProfessionalController {
 				.map(result -> Response.ok(result).build());
 	}
 	
-	@WithTransaction
 	@PUT
 	@Path("/{dni}/update")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -61,7 +57,6 @@ public class ProfessionalController {
 				.map(result -> Response.ok(result).build());
 	}
 	 
-	@WithSession
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Uni<Response> getClient() {
@@ -71,7 +66,6 @@ public class ProfessionalController {
 				.map(result -> Response.ok(result).build());
 	}
 
-	@WithSession
 	@GET
 	@Path("/{dni}")
 	@Produces(MediaType.APPLICATION_JSON)

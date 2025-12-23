@@ -20,7 +20,8 @@ public class Booking {
 	private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
-    private String professionalDni;
-    private String clientDni;
+    private Client client;
+    private Professional professional;
+    private String status;
 
 }

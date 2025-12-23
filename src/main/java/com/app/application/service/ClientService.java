@@ -2,12 +2,14 @@ package com.app.application.service;
 
 import java.util.List;
 
+import com.app.application.finder.ClientFinder;
 import com.app.application.port.in.ClientUseCase;
 import com.app.application.port.out.ClientRepositoryOutPort;
 import com.app.domain.model.Client;
 import com.app.infraestructure.exception.BusinessErrorType;
 import com.app.infraestructure.exception.BusinessException;
 
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +18,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ClientService implements ClientUseCase {
 	
+	private final ClientFinder clientFinder;
 	private final ClientRepositoryOutPort clientRepositoryOutPort;
 	
+	@WithTransaction
 	@Override
 	public Uni<Client> createClient(Client client) {
 		Uni<Boolean> emailExists = clientRepositoryOutPort.existsByEmail(client.getEmail());
@@ -50,22 +54,19 @@ public class ClientService implements ClientUseCase {
 	            });
 	}
 
+	@WithTransaction
 	@Override
 	public Uni<Client> getClientByDni(String dni) {
-		return clientRepositoryOutPort.findByDni(dni)
-				.onItem().ifNull().failWith(
-		                new BusinessException(
-		                    BusinessErrorType.VALIDATION_ERROR,
-		                    "El DNI no se encuentra registrado"
-		                )
-		            );
+		return clientFinder.findByDni(dni);
 	}
 
+	@WithTransaction
 	@Override
 	public Uni<List<Client>> getClients() {
 		return clientRepositoryOutPort.findAll();
 	}
 
+	@WithTransaction
 	@Override
 	public Uni<String> updateClientStatus(String dni, boolean status) {
 		return clientRepositoryOutPort.updateStatus(dni, status)

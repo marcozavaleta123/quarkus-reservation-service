@@ -1,3 +1,9 @@
+D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\application\finder\ClientFinder.java
+D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\application\finder\ClientFinderService.java
+D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\application\finder\ProfessionalFinder.java
+D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\application\finder\ProfessionalFinderService.java
+D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\application\finder\ScheduleFinder.java
+D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\application\finder\ScheduleFinderService.java
 D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\application\port\in\BookingUseCase.java
 D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\application\port\in\ClientUseCase.java
 D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\application\port\in\ProfessionalUseCase.java
@@ -40,4 +46,5 @@ D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\inf
 D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\infraestructure\persistence\JpaClientRepositoryAdapter.java
 D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\infraestructure\persistence\JpaProfessionalRepositoryAdapter.java
 D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\infraestructure\persistence\JpaScheduleRepositoryAdapter.java
+D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\infraestructure\persistence\mapper\BookingMapper.java
 D:\cursos\MitoCode\Quarkus\quarkus-reservation-service\src\main\java\com\app\infraestructure\util\Result.java

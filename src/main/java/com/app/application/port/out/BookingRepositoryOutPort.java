@@ -3,16 +3,17 @@ package com.app.application.port.out;
 import java.util.List;
 
 import com.app.domain.model.Booking;
-import com.app.infraestructure.controller.response.BookingResponse;
 
 import io.smallrye.mutiny.Uni;
 
 public interface BookingRepositoryOutPort {
 	
-	Uni<String> save(Booking booking);
+	Uni<Long> save(Booking booking, Long professionalDni, Long clientDni);
 	
-	Uni<String> cancelBooking(Long id);
+	Uni<Boolean> cancelBooking(Long id);
 	
-	Uni<List<BookingResponse>> getBooking();
+	Uni<List<Booking>> getBooking();
+	
+	Uni<List<Booking>> getBookingByProfessionalId(Long professionalId);
 
 }
