@@ -1,4 +1,21 @@
-# shipment-platform
+# quarkus-reservation-service
+
+Se adjunta el swagger del proyecto : http://localhost:8081/q/swagger-ui/
+
+Para levantar la aplicacion primero deben crear la bd : 
+
+CREATE DATABASE reservation
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'es-ES'
+    LC_CTYPE = 'es-ES'
+    LOCALE_PROVIDER = 'libc'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+    
+ despues solo deben ejecutar la aplicacion en el IDE y las tablas se crearan automaticamente
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
