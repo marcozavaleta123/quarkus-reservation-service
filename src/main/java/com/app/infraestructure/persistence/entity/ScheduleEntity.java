@@ -34,10 +34,10 @@ public class ScheduleEntity extends PanacheEntityBase {
     @Column(nullable = false)
     private LocalDate date;
     
-    @Column(nullable = false)
+    @Column(name = "start_time", nullable = false)
     private LocalTime startTime;
     
-    @Column(nullable = false)
+    @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
     
     @Column(nullable = false)

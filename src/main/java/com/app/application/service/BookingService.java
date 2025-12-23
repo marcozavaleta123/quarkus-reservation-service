@@ -36,7 +36,7 @@ public class BookingService implements BookingUseCase {
 					return clientFinder.findByDni(clientDni)
 							    .flatMap(client -> {
 							    	return scheduleFinder.findByProfessionalIdAndDate(professional.getId(), booking.getDate())
-							    			.invoke(scheduleList -> professionalFinder.validateSchedule(scheduleList, booking.getStartTime(), booking.getEndTime()))
+							    			.invoke(scheduleList -> scheduleFinder.validateSchedule(scheduleList, booking.getStartTime(), booking.getEndTime()))
 							    			.replaceWith(bookingRepositoryOutPort.getBookingByProfessionalId(professional.getId()))
 							    			.invoke(bookingList -> validateBooking(bookingList, booking))
 							    			.flatMap(bookingList -> bookingRepositoryOutPort.save(booking, professional.getId(), client.getId()))
@@ -93,11 +93,17 @@ public class BookingService implements BookingUseCase {
 		List<String> detailList = new ArrayList<>();
 		
 		for(int i = 0; i < bookingDateList.size(); i ++) {
-			String detail = "Reserva " + (i + 1)
-					+ " , Estado : " + bookingDateList.get(i).getStatus() 
-					+ " (Hora de inicio : " + bookingDateList.get(i).getStartTime() + " - Hora final : " + bookingDateList.get(i).getEndTime()
-					+ " , Cliente : " + bookingDateList.get(i).getClient().getFirstName() + " " + bookingDateList.get(i).getClient().getLastName() 
-					+ " , Profesional : " + bookingDateList.get(i).getProfessional().getFirstName() + " " + bookingDateList.get(i).getProfessional().getLastName() + ")";
+			String detail = String.format(
+	                "Reserva %d , Estado : %s (Hora de inicio : %s - Hora final : %s , Cliente : %s %s , Profesional : %s %s)",
+	                i + 1,
+	                bookingDateList.get(i).getStatus(),
+	                bookingDateList.get(i).getStartTime(),
+	                bookingDateList.get(i).getEndTime(),
+	                bookingDateList.get(i).getClient().getFirstName(),
+	                bookingDateList.get(i).getClient().getLastName(),
+	                bookingDateList.get(i).getProfessional().getFirstName(),
+	                bookingDateList.get(i).getProfessional().getLastName()
+	            );
 			detailList.add(detail);
 		}
 		

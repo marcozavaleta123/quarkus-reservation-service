@@ -40,9 +40,9 @@ public class ScheduleService implements ScheduleUseCase {
 	
 	private void validateSchedule(List<Schedule> list, Schedule schedule) {
 		for (Schedule sc : list) {
-			if ((schedule.getStartTime().compareTo(sc.getStartTime()) >= 0 && schedule.getStartTime().compareTo(sc.getEndTime()) <= 0)
+			if ((schedule.getStartTime().compareTo(sc.getStartTime()) >= 0 && schedule.getStartTime().compareTo(sc.getEndTime()) < 0)
 				|| (schedule.getEndTime().compareTo(sc.getStartTime()) > 0 && schedule.getEndTime().compareTo(sc.getEndTime()) < 0)
-				|| (schedule.getStartTime().compareTo(sc.getStartTime()) < 0 && schedule.getEndTime().compareTo(sc.getEndTime()) > 0)) {
+				|| (schedule.getStartTime().compareTo(sc.getStartTime()) < 0 && schedule.getEndTime().compareTo(sc.getEndTime()) >= 0)) {
 				throw new BusinessException(
 		                BusinessErrorType.VALIDATION_ERROR,
 		                "El profesional seleccionado no cuenta con disponibilidad en el horario elegido"
