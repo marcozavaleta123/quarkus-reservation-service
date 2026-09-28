@@ -8,10 +8,11 @@ pipeline {
                 }
             }
             environment {
-                // MAVEN_OPTS = "-Dmaven.repo.local=${WORKSPACE}/.m2"
-                HOME = "${WORKSPACE}"
+                MAVEN_OPTS = "-Dmaven.repo.local=${WORKSPACE}/.m2"
+                //HOME = "${WORKSPACE}"
             }
             steps {
+                sh 'echo "MAVEN_OPTS=${MAVEN_OPTS}"'
                 sh 'mvn clean package -B -ntp -DskipTests'
             }
         }
