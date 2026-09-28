@@ -144,11 +144,16 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${surefire-plugin.version}</version>
+
 				<configuration>
-					<argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+					<argLine>@{argLine} --add-opens
+						java.base/java.lang=ALL-UNNAMED</argLine>
+
 					<systemPropertyVariables>
 						<java.util.logging.manager>
-							org.jboss.logmanager.LogManager</java.util.logging.manager>
+							org.jboss.logmanager.LogManager
+						</java.util.logging.manager>
+
 						<maven.home>${maven.home}</maven.home>
 					</systemPropertyVariables>
 				</configuration>
@@ -178,7 +183,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.14</version>
+				<version>${maven.jacoco-plugin.version}</version>
 
 				<executions>
 					<execution>
