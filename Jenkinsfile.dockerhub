@@ -20,8 +20,8 @@ pipeline {
             agent {
                 docker {
                     image 'docker:29.8.0-cli'
-                    // args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
-                    args '--group-add 988 -v /var/run/docker.sock:/var/run/docker.sock'
+                    args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
+                    //args '--group-add 988 -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
             environment {
