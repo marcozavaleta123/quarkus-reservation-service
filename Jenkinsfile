@@ -25,17 +25,24 @@ pipeline {
                   allowEmptyResults: true
             }
         }
-    }
+        }
         stage('Coverage') {
-            steps {
-                sh 'mvn jacoco:report -B -ntp'
+           steps {
+            sh 'mvn jacoco:report -B -ntp'
+            sh 'echo "=== JaCoCo report ==="'
+            sh 'find target/site/jacoco -type f -print || true'
+           }
+           post {
+            success {
+                recordCoverage(
+                    tools: [[
+                        parser: 'JACOCO',
+                        pattern: 'target/site/jacoco/jacoco.xml'
+                    ]]
+                )
             }
-            post {
-                success {
-                    recordCoverage(tools: [[parser: 'JACOCO']])
-                }
-            }
-        }        
+           }
+       }       
         stage('Package') {
             steps {
                 sh 'mvn package -DskipTests -B -ntp'
