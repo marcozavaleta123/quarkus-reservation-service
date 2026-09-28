@@ -47,10 +47,17 @@ pipeline {
             steps {
                 sh 'mvn package -DskipTests -B -ntp'
             }
-        }/**
+        }
         stage('SonarQube') {
             steps {
-                withSonarQubeEnv('sonarqube'){
+                withSonarQubeEnv('sonarqube'){//nombre del sonarqube configurado en el entorno system de jenkins
+                     sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -ntp"
+                }
+            }
+        }
+        /**stage('SonarQube') {
+            steps {
+                withSonarQubeEnv('sonarqube'){//nombre del sonarqube configurado en el entorno system de jenkins
                     sh 'env | sort'
                     script {
                         if (env.CHANGE_ID) {
@@ -68,7 +75,7 @@ pipeline {
                     }
                 }
             }
-        }  **/     
+        }**/
     }
     post {
         always {
