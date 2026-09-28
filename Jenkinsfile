@@ -31,12 +31,12 @@ pipeline {
                sh 'echo "=== Surefire reports ==="'
                sh 'find target -type f -name "*.xml" -print || true'
             }
-        post {
-            always {
-                junit testResults: 'target/surefire-reports/*.xml',
-                  allowEmptyResults: true
+            post {
+                always {
+                    junit testResults: 'target/surefire-reports/*.xml',
+                    allowEmptyResults: true
+                }
             }
-        }
         }
         stage('Coverage') {
            steps {
@@ -54,7 +54,7 @@ pipeline {
                 )
             }
            }
-       }       
+        }       
         stage('Package') {
             steps {
                 sh 'mvn package -DskipTests -B -ntp'
