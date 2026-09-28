@@ -43,6 +43,7 @@ pipeline {
                         allowEmptyResults: true
                     )
                 }
+            }
         }
         stage('Coverage') {
            agent {
