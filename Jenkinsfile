@@ -73,15 +73,15 @@ pipeline {
                 withSonarQubeEnv('sonarqube'){//nombre del sonarqube configurado en el entorno system de jenkins
                     sh 'env | sort'
                     echo "===== VARIABLES JENKINS ====="
-                    echo "CHANGE_ID=${CHANGE_ID}"
-                    echo "CHANGE_BRANCH=${CHANGE_BRANCH}"
-                    echo "CHANGE_TARGET=${CHANGE_TARGET}"
-                    echo "GIT_BRANCH=${GIT_BRANCH}"
-                    echo "BRANCH_NAME=${BRANCH_NAME}"
-                    echo "JOB_NAME=${JOB_NAME}"
-                    echo "BUILD_NUMBER=${BUILD_NUMBER}"
-                    echo "BUILD_URL=${BUILD_URL}"
-                    echo "WORKSPACE=${WORKSPACE}"
+                    echo "CHANGE_ID     = ${env.CHANGE_ID ?: 'N/A'}"
+                    echo "CHANGE_BRANCH = ${env.CHANGE_BRANCH ?: 'N/A'}"
+                    echo "CHANGE_TARGET = ${env.CHANGE_TARGET ?: 'N/A'}"
+                    echo "GIT_BRANCH    = ${env.GIT_BRANCH ?: 'N/A'}"
+                    echo "BRANCH_NAME   = ${env.BRANCH_NAME ?: 'N/A'}"
+                    echo "JOB_NAME      = ${env.JOB_NAME ?: 'N/A'}"
+                    echo "BUILD_NUMBER  = ${env.BUILD_NUMBER ?: 'N/A'}"
+                    echo "BUILD_URL     = ${env.BUILD_URL ?: 'N/A'}"
+                    echo "WORKSPACE     = ${env.WORKSPACE ?: 'N/A'}"
                     echo "================================"
                     
                     script {
