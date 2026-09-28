@@ -17,19 +17,43 @@ pipeline {
             }
         }
         stage('Test') {
-            steps {
-               sh 'mvn test -B -ntp'
-               sh 'echo "=== Surefire reports ==="'
-               sh 'find target -type f -name "*.xml" -print || true'
-            }
-            post {
-                always {
-                    junit testResults: 'target/surefire-reports/*.xml',
-                    allowEmptyResults: true
+            agent {
+                docker {
+                    image 'maven:3.9.16-eclipse-temurin-21'
                 }
             }
+
+            environment {
+                MAVEN_OPTS = "-Dmaven.repo.local=${WORKSPACE}/.m2"
+            }
+
+            steps {
+                sh 'mvn test -B -ntp'
+
+                sh '''
+                    echo "=== Surefire reports ==="
+                    find target -type f -name "*.xml" -print || true
+                '''
+            }
+
+            post {
+                always {
+                    junit(
+                        testResults: 'target/surefire-reports/*.xml',
+                        allowEmptyResults: true
+                    )
+                }
         }
         stage('Coverage') {
+           agent {
+                docker {
+                    image 'maven:3.9.16-eclipse-temurin-21'
+                }
+            }
+
+            environment {
+                MAVEN_OPTS = "-Dmaven.repo.local=${WORKSPACE}/.m2"
+            }
            steps {
             sh 'mvn jacoco:report -B -ntp'
             sh 'echo "=== JaCoCo report ==="'
@@ -47,6 +71,15 @@ pipeline {
            }
         }
         stage('SonarQube') {
+            agent {
+                docker {
+                    image 'maven:3.9.16-eclipse-temurin-21'
+                }
+            }
+
+            environment {
+                MAVEN_OPTS = "-Dmaven.repo.local=${WORKSPACE}/.m2"
+            }
             steps {
                 withSonarQubeEnv('sonarqube'){//nombre del sonarqube configurado en el entorno system de jenkins
                      sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -ntp -Dsonar.branch.name=master -Dsonar.branch.target=main"
