@@ -35,12 +35,12 @@ pipeline {
                     recordCoverage(tools: [[parser: 'JACOCO']])
                 }
             }
-        } /**       
+        }        
         stage('Package') {
             steps {
                 sh 'mvn package -DskipTests -B -ntp'
             }
-        }
+        }/**
         stage('SonarQube') {
             steps {
                 withSonarQubeEnv('sonarqube'){
