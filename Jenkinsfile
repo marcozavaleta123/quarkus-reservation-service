@@ -15,14 +15,17 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'mvn test -B -ntp'
+               sh 'mvn test -B -ntp'
+               sh 'echo "=== Surefire reports ==="'
+               sh 'find target -type f -name "*.xml" -print || true'
             }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml', allowEmptyResults: true
-                }
+        post {
+            always {
+                junit testResults: 'target/surefire-reports/*.xml',
+                  allowEmptyResults: true
             }
         }
+    }
         /**stage('Coverage') {
             steps {
                 sh 'mvn jacoco:report -B -ntp'
@@ -62,7 +65,7 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true, allowEmptyArchive: true
         }
         cleanup {
             cleanWs()
