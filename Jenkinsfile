@@ -8,6 +8,18 @@ pipeline {
         githubPush()
     }
     stages {
+        stage('Git Info') {
+            steps {
+                echo "========== GIT INFO =========="
+                echo "BRANCH_NAME   = ${env.BRANCH_NAME}"
+                echo "GIT_BRANCH    = ${env.GIT_BRANCH}"
+                echo "CHANGE_ID     = ${env.CHANGE_ID}"
+                echo "CHANGE_BRANCH = ${env.CHANGE_BRANCH}"
+                echo "CHANGE_TARGET = ${env.CHANGE_TARGET}"
+                echo "GIT_COMMIT    = ${env.GIT_COMMIT}"
+                echo "=============================="
+            }
+        }
         stage('Compile') {
             steps {
                 sh 'mvn clean compile -B -ntp'
