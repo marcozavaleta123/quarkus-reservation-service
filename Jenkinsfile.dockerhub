@@ -39,7 +39,7 @@ pipeline {
                     def image = "marcozavaletab/${pom.artifactId}"
                     def tag = "v${env.BUILD_NUMBER}"
 
-                    sh "docker build -t ${image}:${pom.version} . -t ${image}:${tag} . -t ${image}:latest"
+                    sh "docker build -t ${image}:${pom.version}  -t ${image}:${tag}  -t ${image}:latest ."
                      
                     sh 'echo "$DOCKERHUB_CREDENTIALS_PSW" | docker login -u "$DOCKERHUB_CREDENTIALS_USR" --password-stdin'
 
