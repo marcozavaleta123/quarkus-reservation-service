@@ -18,7 +18,7 @@ pipeline {
                 sh 'mvn test -B -ntp'
             }
             post {
-                success {
+                always {
                     junit 'target/surefire-reports/*.xml', allowEmptyResults: true
                 }
             }
