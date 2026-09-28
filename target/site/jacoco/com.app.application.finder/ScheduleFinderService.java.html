@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ScheduleFinderService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">quarkus-reservation-service</a> &gt; <a href="index.source.html" class="el_package">com.app.application.finder</a> &gt; <span class="el_source">ScheduleFinderService.java</span></div><h1>ScheduleFinderService.java</h1><pre class="source lang-java linenums">package com.app.application.finder;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+
+import com.app.application.port.out.ScheduleRepositoryOutPort;
+import com.app.domain.model.Schedule;
+import com.app.infraestructure.exception.BusinessErrorType;
+import com.app.infraestructure.exception.BusinessException;
+
+import io.smallrye.mutiny.Uni;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.RequiredArgsConstructor;
+
+@ApplicationScoped
+@RequiredArgsConstructor
+public class ScheduleFinderService implements ScheduleFinder {
+	
+	private final ScheduleRepositoryOutPort scheduleRepositoryOutPort;
+
+	@Override
+	public Uni&lt;List&lt;Schedule&gt;&gt; findByProfessionalIdAndDate(Long professionalId, LocalDate date) {
+<span class="nc" id="L24">		return scheduleRepositoryOutPort.findByProfessionalIdAndDate(professionalId, date);</span>
+	}
+	
+	@Override
+	public void validateSchedule(List&lt;Schedule&gt; list, LocalTime startTime, LocalTime endTime) {
+<span class="nc bnc" id="L29" title="All 2 branches missed.">		if(list.isEmpty()) </span>
+<span class="nc" id="L30">			throw msgError();</span>
+		
+<span class="nc bnc" id="L32" title="All 2 branches missed.">		for (Schedule sc : list) {</span>
+<span class="nc bnc" id="L33" title="All 4 branches missed.">			if (!((startTime.compareTo(sc.getStartTime()) &gt;= 0 &amp;&amp; endTime.compareTo(sc.getEndTime()) &lt;= 0)</span>
+<span class="nc bnc" id="L34" title="All 4 branches missed.">				|| (endTime.compareTo(sc.getStartTime()) &gt; 0 &amp;&amp; endTime.compareTo(sc.getEndTime()) &lt; 0)</span>
+<span class="nc bnc" id="L35" title="All 4 branches missed.">				|| (startTime.compareTo(sc.getStartTime()) &lt; 0 &amp;&amp; endTime.compareTo(sc.getEndTime()) &gt; 0))) {</span>
+<span class="nc" id="L36">				throw msgError();</span>
+			}
+<span class="nc" id="L38">		}</span>
+<span class="nc" id="L39">	}</span>
+	
+	private BusinessException msgError() {
+<span class="nc" id="L42">	    return new BusinessException(</span>
+	        BusinessErrorType.VALIDATION_ERROR,
+	        &quot;El profesional seleccionado no cuenta con disponibilidad en el horario elegido&quot;
+	    );
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

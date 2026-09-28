@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JpaClientRepositoryAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">quarkus-reservation-service</a> &gt; <a href="index.source.html" class="el_package">com.app.infraestructure.persistence</a> &gt; <span class="el_source">JpaClientRepositoryAdapter.java</span></div><h1>JpaClientRepositoryAdapter.java</h1><pre class="source lang-java linenums"> package com.app.infraestructure.persistence;
+
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
+
+import com.app.application.port.out.ClientRepositoryOutPort;
+import com.app.domain.model.Client;
+import com.app.infraestructure.persistence.entity.ClientEntity;
+
+import io.quarkus.panache.common.Parameters;
+import io.smallrye.mutiny.Uni;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.RequiredArgsConstructor;
+
+@ApplicationScoped
+@RequiredArgsConstructor
+public class JpaClientRepositoryAdapter implements ClientRepositoryOutPort {
+	
+	private final ModelMapper modelMapper;
+	
+	@Override
+    public Uni&lt;Boolean&gt; existsByEmail(String email) {
+<span class="nc" id="L24">	    return ClientEntity.count(&quot;email&quot;, email)</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">	            .map(count -&gt; count &gt; 0);</span>
+	}
+
+	@Override
+    public Uni&lt;Boolean&gt; existsByDni(String dni) {
+<span class="nc" id="L30">	    return ClientEntity.count(&quot;dni&quot;, dni)</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">	            .map(count -&gt; count &gt; 0);</span>
+	}
+
+	@Override
+    public Uni&lt;Client&gt; save(Client client) {
+<span class="nc" id="L36">		ClientEntity entity = modelMapper.map(client, ClientEntity.class);</span>
+<span class="nc" id="L37">		entity.setStatusActive(true);</span>
+<span class="nc" id="L38">		return ClientEntity.persist(entity)</span>
+<span class="nc" id="L39">                .replaceWith(() -&gt; modelMapper.map(entity, Client.class));</span>
+    }
+
+	@Override
+	public Uni&lt;Client&gt; findByDni(String dni) {
+<span class="nc" id="L44">		return ClientEntity.find(&quot;dni = ?1&quot;, dni)</span>
+<span class="nc" id="L45">	            .firstResult()</span>
+<span class="nc" id="L46">	            .map(entity -&gt; {</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">	            	if(entity != null) {</span>
+<span class="nc" id="L48">	            		ClientEntity clientEntity = (ClientEntity) entity;</span>
+<span class="nc" id="L49">		                return modelMapper.map(clientEntity, Client.class);</span>
+	                }
+<span class="nc" id="L51">	            	return null;</span>
+	             });
+	}
+
+	@Override
+	public Uni&lt;List&lt;Client&gt;&gt; findAll() {
+<span class="nc" id="L57">	    return ClientEntity.listAll()</span>
+<span class="nc" id="L58">	            .map(entities -&gt;</span>
+<span class="nc" id="L59">	                    entities.stream()</span>
+<span class="nc" id="L60">	                            .map(entity -&gt; modelMapper.map((ClientEntity) entity, Client.class))</span>
+<span class="nc" id="L61">	                            .toList()</span>
+	            );
+	}
+	
+	@Override
+	public Uni&lt;Boolean&gt; updateStatus(String dni, boolean status) {
+<span class="nc" id="L67">		return ClientEntity.update(&quot;statusActive = :status where dni = :dni&quot;,</span>
+<span class="nc" id="L68">        	    Parameters.with(&quot;status&quot;, status).and(&quot;dni&quot;, dni))</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">				.map(rows -&gt; rows &gt; 0);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

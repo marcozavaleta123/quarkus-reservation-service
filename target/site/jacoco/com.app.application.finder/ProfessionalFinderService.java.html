@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProfessionalFinderService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">quarkus-reservation-service</a> &gt; <a href="index.source.html" class="el_package">com.app.application.finder</a> &gt; <span class="el_source">ProfessionalFinderService.java</span></div><h1>ProfessionalFinderService.java</h1><pre class="source lang-java linenums">package com.app.application.finder;
+
+import com.app.application.port.out.ProfessionalRepositoryOutPort;
+import com.app.domain.model.Professional;
+import com.app.infraestructure.exception.BusinessErrorType;
+import com.app.infraestructure.exception.BusinessException;
+
+import io.smallrye.mutiny.Uni;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.RequiredArgsConstructor;
+
+@ApplicationScoped
+@RequiredArgsConstructor
+public class ProfessionalFinderService implements ProfessionalFinder {
+	
+	private final ProfessionalRepositoryOutPort professionalRepositoryOutPort;
+	
+	@Override
+	public Uni&lt;Professional&gt; findByDni(String dni) {
+<span class="nc" id="L20">		return professionalRepositoryOutPort.findByDni(dni)</span>
+<span class="nc" id="L21">				.onItem().ifNull().failWith(</span>
+		                new BusinessException(
+		                    BusinessErrorType.VALIDATION_ERROR,
+		                    &quot;El DNI del profesional ingresado no se encuentra registrado&quot;
+		                )
+		            );
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

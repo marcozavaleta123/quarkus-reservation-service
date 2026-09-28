@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProfessionalController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">quarkus-reservation-service</a> &gt; <a href="index.source.html" class="el_package">com.app.infraestructure.controller</a> &gt; <span class="el_source">ProfessionalController.java</span></div><h1>ProfessionalController.java</h1><pre class="source lang-java linenums">package com.app.infraestructure.controller;
+
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.modelmapper.ModelMapper;
+
+import com.app.application.port.in.ProfessionalUseCase;
+import com.app.domain.model.Professional;
+import com.app.infraestructure.controller.request.ProfessionalRequest;
+import com.app.infraestructure.controller.response.ProfessionalResponse;
+import com.app.infraestructure.util.Result;
+
+import io.smallrye.mutiny.Uni;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+<span class="fc" id="L31">@Slf4j</span>
+@RequiredArgsConstructor
+@Path(&quot;/professionals&quot;)
+public class ProfessionalController {
+
+	private final ProfessionalUseCase professionalUseCase;
+	private final ModelMapper modelMapper;
+	
+	@Operation(summary = &quot;Registra los profesionales&quot;, description = &quot;&quot;)
+	@APIResponses({
+			@APIResponse(responseCode = &quot;200&quot;, description = &quot;Creación exitosa&quot;, content = @Content(schema = @Schema(implementation = Uni.class))) })
+	@POST
+	public Uni&lt;Response&gt; createClient(@Valid ProfessionalRequest professionalRequest) {
+<span class="nc" id="L44">		Professional professional = modelMapper.map(professionalRequest, Professional.class);</span>
+<span class="nc" id="L45">		return professionalUseCase.createProfessional(professional).map(</span>
+<span class="nc" id="L46">				createdProfessional -&gt; Result.builder().data(modelMapper.map(createdProfessional, ProfessionalResponse.class)).build())</span>
+<span class="nc" id="L47">				.map(result -&gt; Response.ok(result).build());</span>
+	}
+	
+	@PUT
+	@Path(&quot;/{dni}/update&quot;)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Uni&lt;Response&gt; updateClientStatus(@PathParam(&quot;dni&quot;) String dni, @QueryParam(&quot;status&quot;) boolean status) {
+<span class="nc" id="L55">		return professionalUseCase.updateProfessionalStatus(dni, status)</span>
+<span class="nc" id="L56">				.map(msg -&gt; Result.builder().data(msg).build())</span>
+<span class="nc" id="L57">				.map(result -&gt; Response.ok(result).build());</span>
+	}
+	 
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Uni&lt;Response&gt; getClient() {
+<span class="nc" id="L63">		return professionalUseCase.getProfessionals()</span>
+<span class="nc" id="L64">				.map(entities -&gt; entities.stream().map(e -&gt; modelMapper.map((Professional) e, ProfessionalResponse.class)).toList())</span>
+<span class="nc" id="L65">				.map(professionalResponseList -&gt; Result.builder().data(professionalResponseList).build())</span>
+<span class="nc" id="L66">				.map(result -&gt; Response.ok(result).build());</span>
+	}
+
+	@GET
+	@Path(&quot;/{dni}&quot;)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Uni&lt;Response&gt; getClientByDni(@PathParam(&quot;dni&quot;) String dni) {
+<span class="nc" id="L73">		return professionalUseCase.getProfessionalByDni(dni)</span>
+<span class="nc" id="L74">				.map(professional -&gt; Result.builder().data(modelMapper.map(professional, ProfessionalResponse.class)).build())</span>
+<span class="nc" id="L75">				.map(result -&gt; Response.ok(result).build());</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
