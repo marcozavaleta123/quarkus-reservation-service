@@ -16,7 +16,7 @@ pipeline {
                 sh 'mvn clean package -B -ntp -DskipTests'
             }
         }
-        /**stage('DockerHub') {
+        stage('DockerHub') {
             agent {
                 docker {
                     image 'docker:29.8.0-cli'
@@ -37,18 +37,18 @@ pipeline {
                 script {
 
                     def pom = readMavenPom file: 'pom.xml'
-                    def image = "danycenas/${pom.artifactId}"
+                    def image = "marcozavaletab/${pom.artifactId}"
 
                     // Forma 1: Usando comandos Docker directamente
 
-                    // sh 'docker build --help'
-                    // sh "docker build -t ${image}:${pom.version} . -t ${image}:latest"
-                    // sh 'docker images'
+                     sh 'docker build --help'
+                     sh "docker build -t ${image}:${pom.version} . -t ${image}:latest"
+                     sh 'docker images'
 
-                    // sh 'echo "$DOCKERHUB_CREDENTIALS_PSW" | docker login -u "$DOCKERHUB_CREDENTIALS_USR" --password-stdin'
-                    // sh "docker push ${image}:${pom.version}"
-                    // sh "docker push ${image}:latest"
-                    // sh 'docker logout'
+                     sh 'echo "$DOCKERHUB_CREDENTIALS_PSW" | docker login -u "$DOCKERHUB_CREDENTIALS_USR" --password-stdin'
+                     sh "docker push ${image}:${pom.version}"
+                     sh "docker push ${image}:latest"
+                     sh 'docker logout'
 
                     // Forma 2: Usando el plugin de Docker de Jenkins
 
@@ -59,7 +59,7 @@ pipeline {
                     // }
 
                     // Forma 3: Usando docker buildx para multiplatforma
-                    
+                    /**
                     sh 'docker run --privileged --rm tonistiigi/binfmt --install all'
                     sh 'docker buildx create --use'
                     sh 'docker buildx inspect --bootstrap'
@@ -74,10 +74,10 @@ pipeline {
                                 -t ${image}:latest \
                                 --platform linux/amd64,linux/arm64 --push .
                         """
-                    }
+                    }**/
                 }
             }
-        }  **/      
+        }      
     }
     // post { 
     //     cleanup {
