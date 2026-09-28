@@ -1,25 +1,13 @@
 pipeline {
     agent none
+
     stages {
-        stage('Package') {
+
+        stage('Test, Coverage, SonarQube') {
             agent {
                 docker {
                     image 'maven:3.9.16-eclipse-temurin-21'
-                }
-            }
-            environment {
-                MAVEN_OPTS = "-Dmaven.repo.local=${WORKSPACE}/.m2"
-                //HOME = "${WORKSPACE}"
-            }
-            steps {
-                sh 'echo "MAVEN_OPTS=${MAVEN_OPTS}"'
-                sh 'mvn clean package -B -ntp -DskipTests'
-            }
-        }
-        stage('Test') {
-            agent {
-                docker {
-                    image 'maven:3.9.16-eclipse-temurin-21'
+                    args '-v maven-cache:/root/.m2'
                 }
             }
 
@@ -27,86 +15,75 @@ pipeline {
                 MAVEN_OPTS = "-Dmaven.repo.local=${WORKSPACE}/.m2"
             }
 
-            steps {
-                sh 'mvn test -B -ntp'
+            stages {
+                stage('Test') {
+                    steps {
+                        sh 'mvn test -B -ntp'
+                        sh '''
+                          echo "=== Surefire reports ==="
+                          find target -type f -name "*.xml" -print || true
+                        '''
+                    }
 
-                sh '''
-                    echo "=== Surefire reports ==="
-                    find target -type f -name "*.xml" -print || true
-                '''
-            }
+                    post {
+                        always {
+                            junit(
+                                testResults: 'target/surefire-reports/*.xml',
+                                allowEmptyResults: true
+                            )
+                        }
+                    }
+                }
 
-            post {
-                always {
-                    junit(
-                        testResults: 'target/surefire-reports/*.xml',
-                        allowEmptyResults: true
-                    )
+                stage('Coverage') {
+                    steps {
+                        sh 'mvn jacoco:report -B -ntp'
+                        sh 'echo "=== JaCoCo report ==="'
+                        sh 'find target/site/jacoco -type f -print || true'
+                    }
+
+                    post {
+                        success {
+                            recordCoverage(
+                                tools: [[
+                                    parser: 'JACOCO',
+                                    pattern: 'target/site/jacoco/jacoco.xml'
+                                ]]
+                            )
+                        }
+                    }
+                }
+
+                stage('SonarQube') {
+                    steps {
+                        echo "========== SONARQUBE =========="
+
+                        withSonarQubeEnv('sonarqube') {//nombre del sonarqube configurado en el entorno system de jenkins
+                            sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -ntp -Dsonar.branch.name=master -Dsonar.branch.target=main"
+                            //sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -ntp"
+                        }
+                    }
                 }
             }
         }
-        stage('Coverage') {
-           agent {
-                docker {
-                    image 'maven:3.9.16-eclipse-temurin-21'
-                }
-            }
 
-            environment {
-                MAVEN_OPTS = "-Dmaven.repo.local=${WORKSPACE}/.m2"
-            }
-           steps {
-            sh 'mvn jacoco:report -B -ntp'
-            sh 'echo "=== JaCoCo report ==="'
-            sh 'find target/site/jacoco -type f -print || true'
-           }
-           post {
-            success {
-                recordCoverage(
-                    tools: [[
-                        parser: 'JACOCO',
-                        pattern: 'target/site/jacoco/jacoco.xml'
-                    ]]
-                )
-            }
-           }
-        }
-        stage('SonarQube') {
-            agent {
-                docker {
-                    image 'maven:3.9.16-eclipse-temurin-21'
-                }
-            }
-
-            environment {
-                MAVEN_OPTS = "-Dmaven.repo.local=${WORKSPACE}/.m2"
-            }
-            steps {
-                withSonarQubeEnv('sonarqube'){//nombre del sonarqube configurado en el entorno system de jenkins
-                     sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -ntp -Dsonar.branch.name=master -Dsonar.branch.target=main"
-                     //sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -ntp"
-                }
-            }
-        }
         stage('DockerHub') {
             agent {
                 docker {
                     image 'docker:29.8.0-cli'
                     args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
-                    //args '--group-add 988 -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
+
             environment {
                 DOCKER_CONFIG = "${WORKSPACE}/.docker"
                 DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-            }            
-            options { skipDefaultCheckout() }
+            }
+
             steps {
                 sh 'docker --version'
-                sh 'docker images'
 
                 script {
-
                     def pom = readMavenPom file: 'pom.xml'
                     def image = "marcozavaletab/${pom.artifactId}"
                     def tag = "v${env.BUILD_NUMBER}"
@@ -122,11 +99,6 @@ pipeline {
                     sh 'docker logout'
                 }
             }
-        }      
+        }
     }
-    // post { 
-    //     cleanup {
-    //         cleanWs()
-    //     }
-    // }
 }
