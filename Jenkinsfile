@@ -23,7 +23,7 @@ pipeline {
                 }
             }
         }
-        stage('Coverage') {
+        /**stage('Coverage') {
             steps {
                 sh 'mvn jacoco:report -B -ntp'
             }
@@ -38,7 +38,7 @@ pipeline {
                 sh 'mvn package -DskipTests -B -ntp'
             }
         }
-        /**stage('SonarQube') {
+        stage('SonarQube') {
             steps {
                 withSonarQubeEnv('sonarqube'){
                     sh 'env | sort'
