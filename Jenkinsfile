@@ -51,7 +51,8 @@ pipeline {
         stage('SonarQube') {
             steps {
                 withSonarQubeEnv('sonarqube'){//nombre del sonarqube configurado en el entorno system de jenkins
-                     sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -ntp"
+                     sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -ntp -Dsonar.branch.name=main -Dsonar.branch.target=master"
+                     //sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -B -ntp"
                 }
             }
         }
