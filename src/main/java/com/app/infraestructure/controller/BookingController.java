@@ -36,7 +36,7 @@ public class BookingController {
 	
 	@Operation(summary = "Registra las reservas solo si el horario elegido se encuentra disponible x el profesional seleccionado", description = "")
 	@APIResponses({
-			@APIResponse(responseCode = "200", description = "Creación exitosa", content = @Content(schema = @Schema(implementation = Uni.class))) })
+			@APIResponse(responseCode = "200", description = "Creación exitosa OK", content = @Content(schema = @Schema(implementation = Uni.class))) })
 	@POST
 	public Uni<Response> createBooking(@Valid BookingRequest bookingRequest) {
 		Booking booking = modelMapper.map(bookingRequest, Booking.class);
