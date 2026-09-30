@@ -40,7 +40,7 @@ public class ClientController {
 	
 	@Operation(summary = "Registra los clientes", description = "")
 	@APIResponses({
-			@APIResponse(responseCode = "200", description = "Creación exitosa", content = @Content(schema = @Schema(implementation = Uni.class))) })
+			@APIResponse(responseCode = "200", description = "Creación exitosa OK", content = @Content(schema = @Schema(implementation = Uni.class))) })
 	@POST
 	public Uni<Response> createClient(@Valid ClientRequest clientRequest) {
 		Client client = modelMapper.map(clientRequest, Client.class);
