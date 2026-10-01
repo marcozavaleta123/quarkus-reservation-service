@@ -44,12 +44,12 @@ pipeline {
             steps {
                 echo 'Forma 2 - Artifactory - File Spec'
 
-                // sh 'mvn clean package -B -DskipTests' // Resolve maven central dependencies and build the project
+                sh 'mvn clean package -B -DskipTests' // Resolve maven central dependencies and build the project
 
-                withCredentials([file(credentialsId: 'artifactory-settings', variable: 'M2_SETTINGS')]) {
+                /**withCredentials([file(credentialsId: 'artifactory-settings', variable: 'M2_SETTINGS')]) {
                     sh 'env | sort'
                     sh 'mvn clean package -B -DskipTests -s ${M2_SETTINGS}'
-                }                
+                }    **/            
 
                 script{
                     def releaseRepo = 'quarkus-reservation-service-release'
