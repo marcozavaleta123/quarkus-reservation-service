@@ -1,0 +1,60 @@
+pipeline {
+    agent {
+        docker {
+            image 'maven:3.9.16-eclipse-temurin-21'
+        }
+    }
+    environment {
+        HOME = "${WORKSPACE}"
+        NEXUS_CREDENTIALS = credentials('nexus-credentials')
+    }    
+    stages {
+        // stage('Package') {
+        //     steps {
+        //         sh 'mvn clean package -B -DskipTests'
+        //     }
+        // }
+        stage('Package') {
+            steps {
+                withCredentials([file(credentialsId: 'nexus-settings', variable: 'M2_SETTINGS')]) {
+                    sh 'env | sort'
+                    sh 'mvn clean package -B -U -ntp -DskipTests -s ${M2_SETTINGS}'
+                }
+            }
+        }
+        stage('Nexus') {
+            steps {
+                script {
+
+                    sh 'env | sort'
+
+                    def pom = readMavenPom file: 'pom.xml'
+                    println pom
+
+                    nexusPublisher nexusInstanceId: 'nexus',
+                    nexusRepositoryId: 'quarkus-reservation-service-release',
+                    packages: [[$class: 'MavenPackage',
+                        mavenAssetList: [
+                            [
+                                classifier: '', 
+                                extension: '', 
+                                filePath: "target/${pom.artifactId}-${pom.version}.${pom.packaging}"
+                            ]
+                        ],
+                        mavenCoordinate: [
+                            groupId: "${pom.groupId}",
+                            artifactId: "${pom.artifactId}",
+                            packaging: "${pom.packaging}",
+                            version: "${pom.version}"
+                        ]
+                    ]]
+                }
+            }
+        }        
+    }
+    post { 
+        cleanup {
+            cleanWs()
+        }
+    }
+}
